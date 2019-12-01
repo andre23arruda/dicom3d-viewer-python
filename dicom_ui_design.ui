@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>995</width>
-    <height>767</height>
+    <width>1065</width>
+    <height>887</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -22,8 +22,8 @@
   <widget class="QPushButton" name="load_button">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>670</y>
+     <x>30</x>
+     <y>820</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -39,11 +39,14 @@
    </property>
   </widget>
   <widget class="QSlider" name="img_slider">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>620</y>
-     <width>821</width>
+     <y>770</y>
+     <width>771</width>
      <height>20</height>
     </rect>
    </property>
@@ -67,9 +70,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>10</y>
-     <width>931</width>
-     <height>581</height>
+     <y>20</y>
+     <width>831</width>
+     <height>721</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="layout">
@@ -84,8 +87,8 @@
   <widget class="QLabel" name="slice">
    <property name="geometry">
     <rect>
-     <x>870</x>
-     <y>610</y>
+     <x>800</x>
+     <y>760</y>
      <width>55</width>
      <height>41</height>
     </rect>
@@ -99,17 +102,17 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="img_path">
+  <widget class="QLabel" name="warning_label">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>675</y>
-     <width>441</width>
+     <x>860</x>
+     <y>760</y>
+     <width>161</width>
      <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string> </string>
+    <string/>
    </property>
   </widget>
   <widget class="QProgressBar" name="progressBar">
@@ -118,14 +121,131 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>680</y>
-     <width>341</width>
+     <x>170</x>
+     <y>830</y>
+     <width>711</width>
      <height>23</height>
     </rect>
    </property>
    <property name="value">
     <number>0</number>
+   </property>
+  </widget>
+  <widget class="QSlider" name="gamma_slider">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>880</x>
+     <y>90</y>
+     <width>22</width>
+     <height>621</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>100</number>
+   </property>
+   <property name="value">
+    <number>10</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="gamma_label">
+   <property name="geometry">
+    <rect>
+     <x>870</x>
+     <y>50</y>
+     <width>51</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Gamma</string>
+   </property>
+  </widget>
+  <widget class="QSlider" name="gain_slider">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>920</x>
+     <y>90</y>
+     <width>22</width>
+     <height>621</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>100</number>
+   </property>
+   <property name="value">
+    <number>10</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="gain_label">
+   <property name="geometry">
+    <rect>
+     <x>920</x>
+     <y>50</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Gain</string>
+   </property>
+  </widget>
+  <widget class="QSlider" name="filter_slider">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>960</x>
+     <y>90</y>
+     <width>22</width>
+     <height>621</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>10</number>
+   </property>
+   <property name="pageStep">
+    <number>3</number>
+   </property>
+   <property name="value">
+    <number>1</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="filter_label">
+   <property name="geometry">
+    <rect>
+     <x>960</x>
+     <y>50</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Filter</string>
    </property>
   </widget>
  </widget>
