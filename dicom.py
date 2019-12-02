@@ -4,7 +4,7 @@ import numpy as np
 import time
 import pydicom
 import os
-from skimage import exposure
+from skimage import exposure, future, io
 from scipy.ndimage import median_filter
 
 import matplotlib
@@ -36,7 +36,7 @@ def finishWarning():
     msg = QtWidgets.QMessageBox()
     msg.setIcon(QtWidgets.QMessageBox.Information)
 
-    msg.setText("Finish!")
+    msg.setText("Image filtering finished!")
     msg.setWindowTitle("Warning")
     msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
     msg.exec()
@@ -45,11 +45,11 @@ def finishWarning():
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(1065, 887)
+        Dialog.resize(1017, 868)
         Dialog.setAcceptDrops(False)
         Dialog.setAutoFillBackground(False)
         self.load_button = QtWidgets.QPushButton(Dialog)
-        self.load_button.setGeometry(QtCore.QRect(30, 820, 111, 41))
+        self.load_button.setGeometry(QtCore.QRect(20, 10, 111, 41))
         font = QtGui.QFont()
         font.setFamily("Calibri")
         font.setPointSize(12)
@@ -57,7 +57,7 @@ class Ui_Dialog(object):
         self.load_button.setObjectName("load_button")
         self.img_slider = QtWidgets.QSlider(Dialog)
         self.img_slider.setEnabled(False)
-        self.img_slider.setGeometry(QtCore.QRect(20, 770, 771, 20))
+        self.img_slider.setGeometry(QtCore.QRect(20, 800, 771, 20))
         self.img_slider.setMinimum(0)
         self.img_slider.setMaximum(10)
         self.img_slider.setPageStep(2)
@@ -65,7 +65,7 @@ class Ui_Dialog(object):
         self.img_slider.setOrientation(QtCore.Qt.Horizontal)
         self.img_slider.setObjectName("img_slider")
         self.verticalLayoutWidget = QtWidgets.QWidget(Dialog)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 20, 831, 721))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 70, 831, 711))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.layout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.layout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
@@ -73,7 +73,7 @@ class Ui_Dialog(object):
         self.layout.setSpacing(0)
         self.layout.setObjectName("layout")
         self.slice = QtWidgets.QLabel(Dialog)
-        self.slice.setGeometry(QtCore.QRect(800, 760, 55, 41))
+        self.slice.setGeometry(QtCore.QRect(800, 780, 55, 41))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.slice.setFont(font)
@@ -85,12 +85,12 @@ class Ui_Dialog(object):
         self.warning_label.setObjectName("warning_label")
         self.progressBar = QtWidgets.QProgressBar(Dialog)
         self.progressBar.setEnabled(True)
-        self.progressBar.setGeometry(QtCore.QRect(170, 830, 711, 23))
+        self.progressBar.setGeometry(QtCore.QRect(20, 830, 831, 23))
         self.progressBar.setProperty("value", 0)
         self.progressBar.setObjectName("progressBar")
         self.gamma_slider = QtWidgets.QSlider(Dialog)
         self.gamma_slider.setEnabled(False)
-        self.gamma_slider.setGeometry(QtCore.QRect(880, 90, 22, 621))
+        self.gamma_slider.setGeometry(QtCore.QRect(880, 90, 22, 681))
         self.gamma_slider.setMinimum(1)
         self.gamma_slider.setMaximum(100)
         self.gamma_slider.setProperty("value", 10)
@@ -101,7 +101,7 @@ class Ui_Dialog(object):
         self.gamma_label.setObjectName("gamma_label")
         self.gain_slider = QtWidgets.QSlider(Dialog)
         self.gain_slider.setEnabled(False)
-        self.gain_slider.setGeometry(QtCore.QRect(920, 90, 22, 621))
+        self.gain_slider.setGeometry(QtCore.QRect(920, 90, 22, 681))
         self.gain_slider.setMinimum(1)
         self.gain_slider.setMaximum(100)
         self.gain_slider.setProperty("value", 10)
@@ -112,7 +112,7 @@ class Ui_Dialog(object):
         self.gain_label.setObjectName("gain_label")
         self.filter_slider = QtWidgets.QSlider(Dialog)
         self.filter_slider.setEnabled(False)
-        self.filter_slider.setGeometry(QtCore.QRect(960, 90, 22, 621))
+        self.filter_slider.setGeometry(QtCore.QRect(960, 90, 22, 681))
         self.filter_slider.setMinimum(1)
         self.filter_slider.setMaximum(10)
         self.filter_slider.setPageStep(3)
@@ -148,9 +148,8 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dicom3D_viewer"))
-        self.load_button.setText(_translate("Dialog", "Load"))
 
-        self.warning_label.setText(_translate("Dialog", " "))
+        self.load_button.setText(_translate("Dialog", "Load"))
         self.gamma_label.setText(_translate("Dialog", "Gamma"))
         self.gain_label.setText(_translate("Dialog", "Gain"))
         self.filter_label.setText(_translate("Dialog", "Filter"))
@@ -158,7 +157,6 @@ class Ui_Dialog(object):
         self.img_slider.valueChanged.connect(self.getSlice)
         self.gamma_slider.sliderReleased.connect(self.adjustGamma)
         self.gain_slider.sliderReleased.connect(self.adjustGain)
-        # self.filter_slider.valueChanged.connect(self.adjustFilter)
         self.filter_slider.sliderReleased.connect(self.adjustFilter)
 
         self.load_button.clicked.connect(self.readExam)
@@ -253,9 +251,11 @@ class Ui_Dialog(object):
             time.sleep(0.001)
         self.img_volume = img_volume.copy()
         self.img_volume_filter = img_volume.copy()
+        self.img_volume_mask =  0 * img_volume
         self.img_volume_showed = exposure.adjust_gamma(img_volume, gamma = 1)
         self.gamma_slider.setProperty("value", 10)
         self.progressBar.hide()
+
 
 
 if __name__ == "__main__":

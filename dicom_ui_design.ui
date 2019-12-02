@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1065</width>
-    <height>887</height>
+    <width>1017</width>
+    <height>868</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -22,8 +22,8 @@
   <widget class="QPushButton" name="load_button">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>820</y>
+     <x>20</x>
+     <y>10</y>
      <width>111</width>
      <height>41</height>
     </rect>
@@ -45,7 +45,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>770</y>
+     <y>800</y>
      <width>771</width>
      <height>20</height>
     </rect>
@@ -70,9 +70,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>20</y>
+     <y>70</y>
      <width>831</width>
-     <height>721</height>
+     <height>711</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="layout">
@@ -88,7 +88,7 @@
    <property name="geometry">
     <rect>
      <x>800</x>
-     <y>760</y>
+     <y>780</y>
      <width>55</width>
      <height>41</height>
     </rect>
@@ -121,9 +121,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>20</x>
      <y>830</y>
-     <width>711</width>
+     <width>831</width>
      <height>23</height>
     </rect>
    </property>
@@ -140,7 +140,7 @@
      <x>880</x>
      <y>90</y>
      <width>22</width>
-     <height>621</height>
+     <height>681</height>
     </rect>
    </property>
    <property name="minimum">
@@ -178,7 +178,7 @@
      <x>920</x>
      <y>90</y>
      <width>22</width>
-     <height>621</height>
+     <height>681</height>
     </rect>
    </property>
    <property name="minimum">
@@ -216,7 +216,7 @@
      <x>960</x>
      <y>90</y>
      <width>22</width>
-     <height>621</height>
+     <height>681</height>
     </rect>
    </property>
    <property name="minimum">
