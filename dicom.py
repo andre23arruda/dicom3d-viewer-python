@@ -4,7 +4,7 @@ import numpy as np
 import time
 import pydicom
 import os
-from skimage import exposure, future, io
+from skimage import exposure, filters
 from scipy.ndimage import median_filter
 
 import matplotlib
@@ -36,7 +36,7 @@ def finishWarning():
     msg = QtWidgets.QMessageBox()
     msg.setIcon(QtWidgets.QMessageBox.Information)
 
-    msg.setText("Image filtering finished!")
+    msg.setText("Image processing finished!")
     msg.setWindowTitle("Warning")
     msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
     msg.exec()
@@ -45,7 +45,13 @@ def finishWarning():
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(1017, 868)
+        Dialog.setWindowModality(QtCore.Qt.NonModal)
+        Dialog.resize(1113, 868)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
+        Dialog.setSizePolicy(sizePolicy)
         Dialog.setAcceptDrops(False)
         Dialog.setAutoFillBackground(False)
         self.load_button = QtWidgets.QPushButton(Dialog)
@@ -80,7 +86,7 @@ class Ui_Dialog(object):
         self.slice.setText("")
         self.slice.setObjectName("slice")
         self.warning_label = QtWidgets.QLabel(Dialog)
-        self.warning_label.setGeometry(QtCore.QRect(860, 760, 161, 41))
+        self.warning_label.setGeometry(QtCore.QRect(900, 810, 161, 41))
         self.warning_label.setText("")
         self.warning_label.setObjectName("warning_label")
         self.progressBar = QtWidgets.QProgressBar(Dialog)
@@ -101,7 +107,7 @@ class Ui_Dialog(object):
         self.gamma_label.setObjectName("gamma_label")
         self.gain_slider = QtWidgets.QSlider(Dialog)
         self.gain_slider.setEnabled(False)
-        self.gain_slider.setGeometry(QtCore.QRect(920, 90, 22, 681))
+        self.gain_slider.setGeometry(QtCore.QRect(930, 90, 22, 681))
         self.gain_slider.setMinimum(1)
         self.gain_slider.setMaximum(100)
         self.gain_slider.setProperty("value", 10)
@@ -112,7 +118,7 @@ class Ui_Dialog(object):
         self.gain_label.setObjectName("gain_label")
         self.filter_slider = QtWidgets.QSlider(Dialog)
         self.filter_slider.setEnabled(False)
-        self.filter_slider.setGeometry(QtCore.QRect(960, 90, 22, 681))
+        self.filter_slider.setGeometry(QtCore.QRect(980, 90, 22, 681))
         self.filter_slider.setMinimum(1)
         self.filter_slider.setMaximum(10)
         self.filter_slider.setPageStep(3)
@@ -120,8 +126,22 @@ class Ui_Dialog(object):
         self.filter_slider.setOrientation(QtCore.Qt.Vertical)
         self.filter_slider.setObjectName("filter_slider")
         self.filter_label = QtWidgets.QLabel(Dialog)
-        self.filter_label.setGeometry(QtCore.QRect(960, 50, 31, 31))
+        self.filter_label.setGeometry(QtCore.QRect(980, 50, 31, 31))
         self.filter_label.setObjectName("filter_label")
+        self.unsharpen_slider = QtWidgets.QSlider(Dialog)
+        self.unsharpen_slider.setEnabled(False)
+        self.unsharpen_slider.setGeometry(QtCore.QRect(1030, 90, 22, 681))
+        self.unsharpen_slider.setMinimum(0)
+        self.unsharpen_slider.setMaximum(20)
+        self.unsharpen_slider.setPageStep(4)
+        self.unsharpen_slider.setProperty("value", 0)
+        self.unsharpen_slider.setSliderPosition(0)
+        self.unsharpen_slider.setOrientation(QtCore.Qt.Vertical)
+        self.unsharpen_slider.setObjectName("unsharpen_slider")
+        self.unsharp_label = QtWidgets.QLabel(Dialog)
+        self.unsharp_label.setGeometry(QtCore.QRect(1020, 50, 51, 31))
+        self.unsharp_label.setObjectName("unsharp_label")
+
 
         self.progressBar.hide()
         # Dialog.showMaximized()
@@ -130,6 +150,7 @@ class Ui_Dialog(object):
         self.img_volume = None
         self.gamma = 1
         self.gain = 1
+        self.radius_unsharp = 0
 
         img_arr = 255 * np.ones([100, 100],dtype = 'uint8')
         self.figure = plt.figure()
@@ -153,11 +174,13 @@ class Ui_Dialog(object):
         self.gamma_label.setText(_translate("Dialog", "Gamma"))
         self.gain_label.setText(_translate("Dialog", "Gain"))
         self.filter_label.setText(_translate("Dialog", "Filter"))
+        self.unsharp_label.setText(_translate("Dialog", "Unsharp"))
 
         self.img_slider.valueChanged.connect(self.getSlice)
         self.gamma_slider.sliderReleased.connect(self.adjustGamma)
         self.gain_slider.sliderReleased.connect(self.adjustGain)
         self.filter_slider.sliderReleased.connect(self.adjustFilter)
+        self.unsharpen_slider.sliderReleased.connect(self.adjustUnsharp)
 
         self.load_button.clicked.connect(self.readExam)
 
@@ -177,6 +200,7 @@ class Ui_Dialog(object):
             pass
         else:
             self.img_volume_showed = exposure.adjust_gamma(self.img_volume_filter, self.gamma, self.gain)
+            self.adjustUnsharp()
             self.refreshAxes()
 
 
@@ -186,6 +210,7 @@ class Ui_Dialog(object):
             pass
         else:
             self.img_volume_showed = exposure.adjust_gamma(self.img_volume_filter, self.gamma, self.gain)
+            self.adjustUnsharp()
             self.refreshAxes()
 
 
@@ -198,8 +223,19 @@ class Ui_Dialog(object):
             if filterWarning():
                 self.img_volume_filter = median_filter(self.img_volume,(self.filter_kernel, self.filter_kernel, 3))
                 self.img_volume_showed = exposure.adjust_gamma(self.img_volume_filter, self.gamma, self.gain)
+                self.adjustUnsharp()
                 self.refreshAxes()
                 finishWarning()
+
+
+    def adjustUnsharp(self):
+        self.radius_unsharp = 0.1 * self.unsharpen_slider.value()
+        if self.img_volume is None:
+            pass
+        else:
+            self.img_volume_showed = exposure.adjust_gamma(self.img_volume_filter, self.gamma, self.gain)
+            self.img_volume_showed = filters.unsharp_mask(self.img_volume_showed, self.radius_unsharp )
+            self.refreshAxes()
 
 
     def refreshAxes(self):
@@ -208,6 +244,7 @@ class Ui_Dialog(object):
                            vmin = 0, vmax = 1, aspect = 'auto')
         self.img_ax.axis('off')
         self.img_ax.figure.canvas.draw()
+
 
     def readExam(self):
         exam_path = QtWidgets.QFileDialog.getExistingDirectory(None, "Select Image")
@@ -225,6 +262,7 @@ class Ui_Dialog(object):
             self.gain_slider.setEnabled(True)
             self.gamma_slider.setEnabled(True)
             self.filter_slider.setEnabled(True)
+            self.unsharpen_slider.setEnabled(True)
             self.img_slider.setEnabled(True)
 
             self.img_slider.setMaximum(len(dicom_list) - 1)

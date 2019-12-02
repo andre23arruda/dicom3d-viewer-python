@@ -2,13 +2,22 @@
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1017</width>
+    <width>1113</width>
     <height>868</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="acceptDrops">
    <bool>false</bool>
@@ -105,8 +114,8 @@
   <widget class="QLabel" name="warning_label">
    <property name="geometry">
     <rect>
-     <x>860</x>
-     <y>760</y>
+     <x>900</x>
+     <y>810</y>
      <width>161</width>
      <height>41</height>
     </rect>
@@ -175,7 +184,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>920</x>
+     <x>930</x>
      <y>90</y>
      <width>22</width>
      <height>681</height>
@@ -213,7 +222,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>960</x>
+     <x>980</x>
      <y>90</y>
      <width>22</width>
      <height>681</height>
@@ -238,7 +247,7 @@
   <widget class="QLabel" name="filter_label">
    <property name="geometry">
     <rect>
-     <x>960</x>
+     <x>980</x>
      <y>50</y>
      <width>31</width>
      <height>31</height>
@@ -246,6 +255,50 @@
    </property>
    <property name="text">
     <string>Filter</string>
+   </property>
+  </widget>
+  <widget class="QSlider" name="unsharpen_slider">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>1030</x>
+     <y>90</y>
+     <width>22</width>
+     <height>681</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>0</number>
+   </property>
+   <property name="maximum">
+    <number>20</number>
+   </property>
+   <property name="pageStep">
+    <number>4</number>
+   </property>
+   <property name="value">
+    <number>0</number>
+   </property>
+   <property name="sliderPosition">
+    <number>0</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="unsharp_label">
+   <property name="geometry">
+    <rect>
+     <x>1020</x>
+     <y>50</y>
+     <width>51</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Unsharp</string>
    </property>
   </widget>
  </widget>
