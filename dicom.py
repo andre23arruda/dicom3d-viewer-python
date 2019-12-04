@@ -282,11 +282,12 @@ class Ui_Dialog(object):
             dicom_obj = pydicom.dcmread(dicom)
             dicom_img = dicom_obj.pixel_array
             img_slice = dicom_obj.InstanceNumber - 1
-            img_volume[:, :, img_slice] = imNormalize(dicom_img)
+            img_volume[:, :, img_slice] = dicom_img
 
             complete += (100/len(dicom_list))
             self.progressBar.setValue(complete)
             time.sleep(0.001)
+        img_volume = imNormalize(img_volume)
         self.img_volume = img_volume.copy()
         self.img_volume_filter = img_volume.copy()
         self.img_volume_mask =  0 * img_volume
